@@ -6,6 +6,7 @@ import { marked } from "marked";
 import prisma from "~/lib/prisma.server";
 import { deletePost, getPost, publishPost } from "~/models/post.server";
 import { getUserId } from "~/session.server";
+import { useOptionalUser } from "~/utils";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -63,6 +64,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function Post() {
   const { post } = useLoaderData<typeof loader>()
+  const user = useOptionalUser()
 
   return (
     <div>
@@ -70,18 +72,21 @@ export default function Post() {
       <p>By {post?.author?.name || 'Unknown author'}</p>
       <article dangerouslySetInnerHTML={{ __html: post.content }} />
       <div style={{ display: 'flex', }}>
-        {!post.published && (
-          <Form method="put">
-            <button type="submit" value="publish" name="_publish" className="button">
-              Publish
+        {user && <>
+          {!post.published && (
+            <Form method="put">
+              <button type="submit" value="publish" name="_publish" className="button">
+                Publish
+              </button>
+            </Form>
+          )}
+          <Form method="delete">
+            <button type="submit" value="delete" name="_delete" className="button ml-10">
+              Delete
             </button>
           </Form>
-        )}
-        <Form method="delete">
-          <button type="submit" value="delete" name="_delete" className="button ml-10">
-            Delete
-          </button>
-        </Form>
+
+        </>}
       </div>
     </div>
   )
