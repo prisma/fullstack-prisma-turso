@@ -3,7 +3,6 @@ import { json, redirect } from "@vercel/remix";
 import { Form, useLoaderData } from "@remix-run/react";
 import { marked } from "marked";
 
-import prisma from "~/lib/prisma.server";
 import { deletePost, getPost, publishPost } from "~/models/post.server";
 import { getUserId } from "~/session.server";
 import { useOptionalUser } from "~/utils";
